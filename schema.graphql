@@ -31,10 +31,9 @@ enum orderby {
     chapter
 }
 
-
-
 scalar Date
 scalar Money
+scalar TimeSpan
 
 type User {
     id:                 ID!
@@ -46,6 +45,8 @@ type User {
     city:               String
     email_subscriber:   Boolean = false
     img_url:            String
+    roles:              [Role!]!
+    collections:        [Collection!]
 }
 
 type Role {
@@ -68,8 +69,8 @@ type Collection {
     annotation:         String
     source:             collection_source
     img_url:            String!
-    category_id:        ID!
-    scripture_id:       ID!
+    category:           Category!
+    scripture:          Scripture!
     canto:              Int
     chapter:            Int
     verse:              Int
@@ -80,9 +81,10 @@ type Collection {
     direction:          direction
     is_new:             Boolean = false
     visible:            Boolean = true
-    location_id:        Int
+    location:           Location
     ordern:             Int
     is_show_detail:     Boolean = false
+    media:              [Media!]!
 }
 
 
@@ -104,61 +106,78 @@ type Location {
     name:               String!
 }
 
+type MediaData {
+    id:                 ID!
+    data_type:          media_data_type
+    value:              String
+}
+
 type Media {
     id:                 ID!
- type            | media_type                  |           |          |
- title           | character varying(256)      |           | not null |
- teaser          | text                        |           |          |
- jira_ref        | character varying(128)      |           |          |
- text            | text                        |           |          |
- occurrence_date | date                        |           | not null |
- issue_date      | timestamp without time zone |           |          |
- category_id     | integer                     |           |          |
- img_url         | text                        |           | not null |
- file_url        | text                        |           |          |
- alias_url       | text                        |           |          |
- location_id     | integer                     |           |          |
- visible         | boolean                     |           |          | true
- duration        | interval                    |           |          |
- size            | integer                     |           |          |
- language        | lang                        |           | not null | 'RUS'::lang
- cover_url       | character varying(512)      |           |          |
+    type:               media_type
+    title:              String!
+    teaser:             String
+    jira_ref:           String
+    text:               String
+    occurrence_date:    Date!
+    issue_date:         Date
+    category:           Category
+    img_url:            String!
+    file_url:           String
+    alias_url:          String
+    location:           Location
+    visible:            Boolean = true
+    duration:           TimeSpan
+    size:               Int
+    language:           lang
+    cover_url:          String
+    transcript:         Transcript
+    scriptures:         [Scripture!]
+    data:               [MediaData!]
+    tags:               [Tag!]
 }
 
 type Scripture {
-       Column    |          Type          | Collation | Nullable |                Default
--------------+------------------------+-----------+----------+---------------------------------------
- id          | integer                |           | not null | nextval('scripture_id_seq'::regclass)
- name        | character varying(512) |           | not null |
- description | text                   |           |          |
- expression  | character varying(256) |           |          |
+    id:                 Int!
+    name:               String!
+    description:        String
+    expression:         String
 }
 
 type Transcript {
- id      | integer |           | not null | nextval('transcript2_id_seq'::regclass)
- publish | date    |           |          |
- html    | text    |           |          |
+    id:                 Int!
+    publish:            Date
+    html:               String
 }
 
 type Vacancy {
- id          | integer                |           | not null | nextval('vacancy_id_seq'::regclass)
- title       | character varying(254) |           | not null |
- description | text                   |           |          |
- img_uri     | character varying(254) |           |          |
- ordern      | integer                |           |          |
+    id:                 Int!
+    title:              String!
+    description:        String
+    img_uri:            String
+    ordern:             Int
 }
 
 type Photo {
- id       | integer                |           | not null | nextval('photo_id_seq'::regclass)
- title    | character varying(255) |           | not null |
- album_id | integer                |           | not null |
- img_url  | text                   |           | not null |
- ordern   | integer                |           |          |
+    id:                 Int!
+    title:              String!
+    album_id:           Int!
+    img_url:            String!
+    ordern:             Int
+}
+
+type PhotoAlbum {
+    id:                 Int!
+    title:              String!
+    date:               Date!
+    ordern:             Int
+    img_url:            String
+    photoes:            [Photo!]
 }
 
 type Tag {
- id     | integer                |           | not null | nextval('tag_id_seq'::regclass)
- name   | character varying(128) |           | not null |
+    id:                 Int!
+    name:               String!
 }
 
 
