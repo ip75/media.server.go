@@ -1,0 +1,168 @@
+enum collection_source {
+    lecture
+    collection
+    filter
+}
+
+enum direction {
+    ASC
+    DESC
+}
+
+enum lang {
+    RUS
+    ENG
+}
+enum media_data_type {
+    video
+    image
+}
+
+enum media_type {
+    audio
+    book
+    article
+}
+
+enum orderby {
+    verse
+    date
+    canto
+    chapter
+}
+
+
+
+scalar Date
+scalar Money
+
+type User {
+    id:                 ID!
+    email:              String!
+    username:           String!
+    password:           String!
+    is_active:          Boolean
+    birth_date:         Date
+    city:               String
+    email_subscriber:   Boolean = false
+    img_url:            String
+}
+
+type Role {
+    id:                 ID!
+    name:               String!
+    code:               String
+    description:        String
+}
+
+
+type Category {
+    id:                 ID!
+    name:               String!
+}
+
+type Collection {
+    id:                 ID!
+    short_name:         String!
+    full_name:          String
+    annotation:         String
+    source:             collection_source
+    img_url:            String!
+    category_id:        ID!
+    scripture_id:       ID!
+    canto:              Int
+    chapter:            Int
+    verse:              Int
+    date_from:          Date
+    date_to:            Date
+    language:           lang
+    order_by:           orderby
+    direction:          direction
+    is_new:             Boolean = false
+    visible:            Boolean = true
+    location_id:        Int
+    ordern:             Int
+    is_show_detail:     Boolean = false
+}
+
+
+type Donation {
+    id:                 ID!
+    title:              String!
+    description:        String
+    img_url:            String
+    amount:             Money
+    necessary_amount:   Money
+    end_date:           Date
+    latest_recharge:    Date
+    currency:           String! = RUR
+    begin_date:         Date
+}
+
+type Location {
+    id:                 ID!
+    name:               String!
+}
+
+type Media {
+    id:                 ID!
+ type            | media_type                  |           |          |
+ title           | character varying(256)      |           | not null |
+ teaser          | text                        |           |          |
+ jira_ref        | character varying(128)      |           |          |
+ text            | text                        |           |          |
+ occurrence_date | date                        |           | not null |
+ issue_date      | timestamp without time zone |           |          |
+ category_id     | integer                     |           |          |
+ img_url         | text                        |           | not null |
+ file_url        | text                        |           |          |
+ alias_url       | text                        |           |          |
+ location_id     | integer                     |           |          |
+ visible         | boolean                     |           |          | true
+ duration        | interval                    |           |          |
+ size            | integer                     |           |          |
+ language        | lang                        |           | not null | 'RUS'::lang
+ cover_url       | character varying(512)      |           |          |
+}
+
+type Scripture {
+       Column    |          Type          | Collation | Nullable |                Default
+-------------+------------------------+-----------+----------+---------------------------------------
+ id          | integer                |           | not null | nextval('scripture_id_seq'::regclass)
+ name        | character varying(512) |           | not null |
+ description | text                   |           |          |
+ expression  | character varying(256) |           |          |
+}
+
+type Transcript {
+ id      | integer |           | not null | nextval('transcript2_id_seq'::regclass)
+ publish | date    |           |          |
+ html    | text    |           |          |
+}
+
+type Vacancy {
+ id          | integer                |           | not null | nextval('vacancy_id_seq'::regclass)
+ title       | character varying(254) |           | not null |
+ description | text                   |           |          |
+ img_uri     | character varying(254) |           |          |
+ ordern      | integer                |           |          |
+}
+
+type Photo {
+ id       | integer                |           | not null | nextval('photo_id_seq'::regclass)
+ title    | character varying(255) |           | not null |
+ album_id | integer                |           | not null |
+ img_url  | text                   |           | not null |
+ ordern   | integer                |           |          |
+}
+
+type Tag {
+ id     | integer                |           | not null | nextval('tag_id_seq'::regclass)
+ name   | character varying(128) |           | not null |
+}
+
+
+
+
+
+
