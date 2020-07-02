@@ -1,0 +1,1 @@
+go run scripts/gqlgen.go init

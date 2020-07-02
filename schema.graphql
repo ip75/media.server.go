@@ -43,7 +43,7 @@ type User {
     is_active:          Boolean
     birth_date:         Date
     city:               String
-    email_subscriber:   Boolean = false
+    email_subscriber:   Boolean# = false
     img_url:            String
     roles:              [Role!]!
     collections:        [Collection!]
@@ -79,11 +79,11 @@ type Collection {
     language:           lang
     order_by:           orderby
     direction:          direction
-    is_new:             Boolean = false
-    visible:            Boolean = true
+    is_new:             Boolean# = false
+    visible:            Boolean# = true
     location:           Location
     ordern:             Int
-    is_show_detail:     Boolean = false
+    is_show_detail:     Boolean# = false
     media:              [Media!]!
 }
 
@@ -97,7 +97,7 @@ type Donation {
     necessary_amount:   Money
     end_date:           Date
     latest_recharge:    Date
-    currency:           String! = RUR
+    currency:           String!# = RUR
     begin_date:         Date
 }
 
@@ -126,7 +126,7 @@ type Media {
     file_url:           String
     alias_url:          String
     location:           Location
-    visible:            Boolean = true
+    visible:            Boolean# = true
     duration:           TimeSpan
     size:               Int
     language:           lang
