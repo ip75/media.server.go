@@ -1,8 +1,8 @@
 module github.com/ip75/media.server.go
 
-go 1.14
+go 1.15
 
 require (
-	github.com/99designs/gqlgen v0.11.3
-	github.com/vektah/gqlparser/v2 v2.0.1
+	github.com/99designs/gqlgen v0.13.0
+	github.com/vektah/gqlparser/v2 v2.1.0
 )

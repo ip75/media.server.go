@@ -2,19 +2,421 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
+type Category struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type Collection struct {
+	ID           int               `json:"id"`
+	ShortName    string            `json:"short_name"`
+	FullName     *string           `json:"full_name"`
+	Annotation   *string           `json:"annotation"`
+	Source       *CollectionSource `json:"source"`
+	ImgURL       string            `json:"img_url"`
+	Category     *Category         `json:"category"`
+	Scripture    *Scripture        `json:"scripture"`
+	Canto        *int              `json:"canto"`
+	Chapter      *int              `json:"chapter"`
+	Verse        *int              `json:"verse"`
+	DateFrom     *string           `json:"date_from"`
+	DateTo       *string           `json:"date_to"`
+	Language     *Lang             `json:"language"`
+	OrderBy      *Orderby          `json:"order_by"`
+	Direction    *Direction        `json:"direction"`
+	IsNew        *bool             `json:"is_new"`
+	Visible      *bool             `json:"visible"`
+	Location     *Location         `json:"location"`
+	Ordern       *int              `json:"ordern"`
+	IsShowDetail *bool             `json:"is_show_detail"`
+	Media        []*Media          `json:"media"`
+}
+
+type Donation struct {
+	ID              int     `json:"id"`
+	Title           string  `json:"title"`
+	Description     *string `json:"description"`
+	ImgURL          *string `json:"img_url"`
+	Amount          *string `json:"amount"`
+	NecessaryAmount *string `json:"necessary_amount"`
+	EndDate         *string `json:"end_date"`
+	LatestRecharge  *string `json:"latest_recharge"`
+	Currency        string  `json:"currency"`
+	BeginDate       *string `json:"begin_date"`
+}
+
+type Location struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+type Media struct {
+	ID             int          `json:"id"`
+	Type           *MediaType   `json:"type"`
+	Title          string       `json:"title"`
+	Teaser         *string      `json:"teaser"`
+	JiraRef        *string      `json:"jira_ref"`
+	Text           *string      `json:"text"`
+	OccurrenceDate string       `json:"occurrence_date"`
+	IssueDate      *string      `json:"issue_date"`
+	Category       *Category    `json:"category"`
+	ImgURL         string       `json:"img_url"`
+	FileURL        *string      `json:"file_url"`
+	AliasURL       *string      `json:"alias_url"`
+	Location       *Location    `json:"location"`
+	Visible        *bool        `json:"visible"`
+	Duration       *string      `json:"duration"`
+	Size           *int         `json:"size"`
+	Language       *Lang        `json:"language"`
+	CoverURL       *string      `json:"cover_url"`
+	Transcript     *Transcript  `json:"transcript"`
+	Scriptures     []*Scripture `json:"scriptures"`
+	Data           []*MediaData `json:"data"`
+	Tags           []*Tag       `json:"tags"`
+}
+
+type MediaData struct {
+	ID       int            `json:"id"`
+	DataType *MediaDataType `json:"data_type"`
+	Value    *string        `json:"value"`
+}
+
+type MediaInput struct {
+	Type           *MediaType `json:"type"`
+	Title          string     `json:"title"`
+	Teaser         *string    `json:"teaser"`
+	Text           *string    `json:"text"`
+	OccurrenceDate string     `json:"occurrence_date"`
+	ImgURL         string     `json:"img_url"`
+	FileURL        *string    `json:"file_url"`
+	AliasURL       *string    `json:"alias_url"`
+	Visible        *bool      `json:"visible"`
+	Duration       *string    `json:"duration"`
+	Size           *int       `json:"size"`
+	Language       *Lang      `json:"language"`
+	CoverURL       *string    `json:"cover_url"`
+}
+
+type Photo struct {
+	ID      int    `json:"id"`
+	Title   string `json:"title"`
+	AlbumID int    `json:"album_id"`
+	ImgURL  string `json:"img_url"`
+	Ordern  *int   `json:"ordern"`
+}
+
+type PhotoAlbum struct {
+	ID      int      `json:"id"`
+	Title   string   `json:"title"`
+	Date    string   `json:"date"`
+	Ordern  *int     `json:"ordern"`
+	ImgURL  *string  `json:"img_url"`
+	Photoes []*Photo `json:"photoes"`
+}
+
+type Role struct {
+	ID          int     `json:"id"`
+	Name        string  `json:"name"`
+	Code        *string `json:"code"`
+	Description *string `json:"description"`
+}
+
+type Scripture struct {
+	ID          int     `json:"id"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+	Expression  *string `json:"expression"`
+}
+
+type Tag struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+type Transcript struct {
+	ID      int     `json:"id"`
+	Publish *string `json:"publish"`
+	HTML    *string `json:"html"`
 }
 
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID              int           `json:"id"`
+	Email           string        `json:"email"`
+	Username        string        `json:"username"`
+	Password        string        `json:"password"`
+	IsActive        *bool         `json:"is_active"`
+	BirthDate       *string       `json:"birth_date"`
+	City            *string       `json:"city"`
+	EmailSubscriber *bool         `json:"email_subscriber"`
+	ImgURL          *string       `json:"img_url"`
+	Roles           []*Role       `json:"roles"`
+	Collections     []*Collection `json:"collections"`
+}
+
+type Vacancy struct {
+	ID          int     `json:"id"`
+	Title       string  `json:"title"`
+	Description *string `json:"description"`
+	ImgURI      *string `json:"img_uri"`
+	Ordern      *int    `json:"ordern"`
+}
+
+type CollectionSource string
+
+const (
+	CollectionSourceLecture    CollectionSource = "lecture"
+	CollectionSourceCollection CollectionSource = "collection"
+	CollectionSourceFilter     CollectionSource = "filter"
+)
+
+var AllCollectionSource = []CollectionSource{
+	CollectionSourceLecture,
+	CollectionSourceCollection,
+	CollectionSourceFilter,
+}
+
+func (e CollectionSource) IsValid() bool {
+	switch e {
+	case CollectionSourceLecture, CollectionSourceCollection, CollectionSourceFilter:
+		return true
+	}
+	return false
+}
+
+func (e CollectionSource) String() string {
+	return string(e)
+}
+
+func (e *CollectionSource) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = CollectionSource(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid collection_source", str)
+	}
+	return nil
+}
+
+func (e CollectionSource) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type Direction string
+
+const (
+	DirectionAsc  Direction = "ASC"
+	DirectionDesc Direction = "DESC"
+)
+
+var AllDirection = []Direction{
+	DirectionAsc,
+	DirectionDesc,
+}
+
+func (e Direction) IsValid() bool {
+	switch e {
+	case DirectionAsc, DirectionDesc:
+		return true
+	}
+	return false
+}
+
+func (e Direction) String() string {
+	return string(e)
+}
+
+func (e *Direction) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Direction(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid direction", str)
+	}
+	return nil
+}
+
+func (e Direction) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type Lang string
+
+const (
+	LangRus Lang = "RUS"
+	LangEng Lang = "ENG"
+)
+
+var AllLang = []Lang{
+	LangRus,
+	LangEng,
+}
+
+func (e Lang) IsValid() bool {
+	switch e {
+	case LangRus, LangEng:
+		return true
+	}
+	return false
+}
+
+func (e Lang) String() string {
+	return string(e)
+}
+
+func (e *Lang) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Lang(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid lang", str)
+	}
+	return nil
+}
+
+func (e Lang) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type MediaDataType string
+
+const (
+	MediaDataTypeVideo MediaDataType = "video"
+	MediaDataTypeImage MediaDataType = "image"
+)
+
+var AllMediaDataType = []MediaDataType{
+	MediaDataTypeVideo,
+	MediaDataTypeImage,
+}
+
+func (e MediaDataType) IsValid() bool {
+	switch e {
+	case MediaDataTypeVideo, MediaDataTypeImage:
+		return true
+	}
+	return false
+}
+
+func (e MediaDataType) String() string {
+	return string(e)
+}
+
+func (e *MediaDataType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = MediaDataType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid media_data_type", str)
+	}
+	return nil
+}
+
+func (e MediaDataType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type MediaType string
+
+const (
+	MediaTypeAudio   MediaType = "audio"
+	MediaTypeBook    MediaType = "book"
+	MediaTypeArticle MediaType = "article"
+)
+
+var AllMediaType = []MediaType{
+	MediaTypeAudio,
+	MediaTypeBook,
+	MediaTypeArticle,
+}
+
+func (e MediaType) IsValid() bool {
+	switch e {
+	case MediaTypeAudio, MediaTypeBook, MediaTypeArticle:
+		return true
+	}
+	return false
+}
+
+func (e MediaType) String() string {
+	return string(e)
+}
+
+func (e *MediaType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = MediaType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid media_type", str)
+	}
+	return nil
+}
+
+func (e MediaType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type Orderby string
+
+const (
+	OrderbyVerse   Orderby = "verse"
+	OrderbyDate    Orderby = "date"
+	OrderbyCanto   Orderby = "canto"
+	OrderbyChapter Orderby = "chapter"
+)
+
+var AllOrderby = []Orderby{
+	OrderbyVerse,
+	OrderbyDate,
+	OrderbyCanto,
+	OrderbyChapter,
+}
+
+func (e Orderby) IsValid() bool {
+	switch e {
+	case OrderbyVerse, OrderbyDate, OrderbyCanto, OrderbyChapter:
+		return true
+	}
+	return false
+}
+
+func (e Orderby) String() string {
+	return string(e)
+}
+
+func (e *Orderby) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Orderby(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid orderby", str)
+	}
+	return nil
+}
+
+func (e Orderby) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

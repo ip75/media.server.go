@@ -1,1 +1,1 @@
-go run scripts/gqlgen.go init
+go run github.com/99designs/gqlgen init

@@ -1,28 +1,213 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
-
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
+enum collection_source {
+    lecture
+    collection
+    filter
 }
+
+enum direction {
+    ASC
+    DESC
+}
+
+enum lang {
+    RUS
+    ENG
+}
+enum media_data_type {
+    video
+    image
+}
+
+enum media_type {
+    audio
+    book
+    article
+}
+
+enum orderby {
+    verse
+    date
+    canto
+    chapter
+}
+
+scalar Date
+scalar Money
+scalar TimeSpan
 
 type User {
-  id: ID!
-  name: String!
+    id:                 ID!
+    email:              String!
+    username:           String!
+    password:           String!
+    is_active:          Boolean
+    birth_date:         Date
+    city:               String
+    email_subscriber:   Boolean# = false
+    img_url:            String
+    roles:              [Role!]!
+    collections:        [Collection!]
 }
+
+type Role {
+    id:                 ID!
+    name:               String!
+    code:               String
+    description:        String
+}
+
+
+type Category {
+    id:                 ID!
+    name:               String!
+}
+
+type Collection {
+    id:                 ID!
+    short_name:         String!
+    full_name:          String
+    annotation:         String
+    source:             collection_source
+    img_url:            String!
+    category:           Category!
+    scripture:          Scripture!
+    canto:              Int
+    chapter:            Int
+    verse:              Int
+    date_from:          Date
+    date_to:            Date
+    language:           lang
+    order_by:           orderby
+    direction:          direction
+    is_new:             Boolean# = false
+    visible:            Boolean# = true
+    location:           Location
+    ordern:             Int
+    is_show_detail:     Boolean# = false
+    media:              [Media!]!
+}
+
+
+type Donation {
+    id:                 ID!
+    title:              String!
+    description:        String
+    img_url:            String
+    amount:             Money
+    necessary_amount:   Money
+    end_date:           Date
+    latest_recharge:    Date
+    currency:           String!# = RUR
+    begin_date:         Date
+}
+
+type Location {
+    id:                 ID!
+    name:               String!
+}
+
+type MediaData {
+    id:                 ID!
+    data_type:          media_data_type
+    value:              String
+}
+
+type Media {
+    id:                 ID!
+    type:               media_type
+    title:              String!
+    teaser:             String
+    jira_ref:           String
+    text:               String
+    occurrence_date:    Date!
+    issue_date:         Date
+    category:           Category
+    img_url:            String!
+    file_url:           String
+    alias_url:          String
+    location:           Location
+    visible:            Boolean# = true
+    duration:           TimeSpan
+    size:               Int
+    language:           lang
+    cover_url:          String
+    transcript:         Transcript
+    scriptures:         [Scripture!]
+    data:               [MediaData!]
+    tags:               [Tag!]
+}
+
+type Scripture {
+    id:                 Int!
+    name:               String!
+    description:        String
+    expression:         String
+}
+
+type Transcript {
+    id:                 Int!
+    publish:            Date
+    html:               String
+}
+
+type Vacancy {
+    id:                 Int!
+    title:              String!
+    description:        String
+    img_uri:            String
+    ordern:             Int
+}
+
+type Photo {
+    id:                 Int!
+    title:              String!
+    album_id:           Int!
+    img_url:            String!
+    ordern:             Int
+}
+
+type PhotoAlbum {
+    id:                 Int!
+    title:              String!
+    date:               Date!
+    ordern:             Int
+    img_url:            String
+    photoes:            [Photo!]
+}
+
+type Tag {
+    id:                 Int!
+    name:               String!
+}
+
 
 type Query {
-  todos: [Todo!]!
+    getMedia (id: ID, withData: Boolean!) : Media
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
+input MediaInput {
+    type:               media_type
+    title:              String!
+    teaser:             String
+    text:               String
+    occurrence_date:    Date!
+    img_url:            String!
+    file_url:           String
+    alias_url:          String
+    visible:            Boolean
+    duration:           TimeSpan
+    size:               Int
+    language:           lang
+    cover_url:          String
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+    createMedia (input: MediaInput) : Media
+    updateMedia (id: ID!, input: MediaInput) : Media
 }
+
+type Subscription {
+    mediaAdded: Media
+}
+
+

@@ -11,11 +11,19 @@ import (
 	"github.com/ip75/media.server.go/graph/model"
 )
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
+func (r *mutationResolver) CreateMedia(ctx context.Context, input *model.MediaInput) (*model.Media, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
+func (r *mutationResolver) UpdateMedia(ctx context.Context, id int, input *model.MediaInput) (*model.Media, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) GetMedia(ctx context.Context, id *int, withData bool) (*model.Media, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *subscriptionResolver) MediaAdded(ctx context.Context) (<-chan *model.Media, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -25,5 +33,9 @@ func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResol
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+// Subscription returns generated.SubscriptionResolver implementation.
+func (r *Resolver) Subscription() generated.SubscriptionResolver { return &subscriptionResolver{r} }
+
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type subscriptionResolver struct{ *Resolver }
