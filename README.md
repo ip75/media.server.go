@@ -6,3 +6,6 @@
 
 # Create the project skeleton
 - $ go run github.com/99designs/gqlgen init
+
+# Generate sources from schema
+- $ go run github.com/99designs/gqlgen generate

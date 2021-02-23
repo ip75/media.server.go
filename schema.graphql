@@ -181,7 +181,33 @@ type Tag {
 }
 
 
+type Query {
+    getMedia (id: ID, withData: Boolean!) : Media
+}
 
+input MediaInput {
+    type:               media_type
+    title:              String!
+    teaser:             String
+    text:               String
+    occurrence_date:    Date!
+    img_url:            String!
+    file_url:           String
+    alias_url:          String
+    visible:            Boolean
+    duration:           TimeSpan
+    size:               Int
+    language:           lang
+    cover_url:          String
+}
 
+type Mutation {
+    createMedia (input: MediaInput) : Media
+    updateMedia (id: ID!, input: MediaInput) : Media
+}
+
+type Subscription {
+    mediaAdded: Media
+}
 
 

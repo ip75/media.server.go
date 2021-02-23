@@ -87,6 +87,36 @@ type MediaData struct {
 	Value    *string        `json:"value"`
 }
 
+type MediaFilterInput struct {
+	Type string `json:"type"`
+	ID   *int   `json:"id"`
+	Ids  []*int `json:"ids"`
+	// If you want to sort by "id", you should use "media.id"
+	OrderBy         *string `json:"orderBy"`
+	OrderDir        *string `json:"orderDir"`
+	Page            *int    `json:"page"`
+	ElementsPerPage *int    `json:"elementsPerPage"`
+	// Подборка
+	CollectionID   *int    `json:"collection_id"`
+	Tags           []*int  `json:"tags"`
+	Title          *string `json:"title"`
+	ScriptureID    *int    `json:"scripture_id"`
+	CategoryID     *int    `json:"category_id"`
+	Language       *string `json:"language"`
+	LocationID     *int    `json:"location_id"`
+	DateFrom       *string `json:"dateFrom"`
+	DateTo         *string `json:"dateTo"`
+	WithVideo      *bool   `json:"withVideo"`
+	WithTranscript *bool   `json:"withTranscript"`
+	Favorite       *bool   `json:"favorite"`
+	History        *bool   `json:"history"`
+	FilterID       *int    `json:"filter_id"`
+	ForAdmin       *bool   `json:"forAdmin"`
+	Chapter        []*int  `json:"chapter"`
+	Canto          []*int  `json:"canto"`
+	Verse          []*int  `json:"verse"`
+}
+
 type MediaInput struct {
 	Type           *MediaType `json:"type"`
 	Title          string     `json:"title"`
@@ -101,6 +131,16 @@ type MediaInput struct {
 	Size           *int       `json:"size"`
 	Language       *Lang      `json:"language"`
 	CoverURL       *string    `json:"cover_url"`
+}
+
+type ModifyUserInput struct {
+	Username        string  `json:"username"`
+	Email           string  `json:"email"`
+	BirthDate       string  `json:"birth_date"`
+	City            string  `json:"city"`
+	EmailSubscriber bool    `json:"email_subscriber"`
+	NewPassword     *string `json:"new_password"`
+	ImgURL          *string `json:"img_url"`
 }
 
 type Photo struct {
@@ -134,6 +174,13 @@ type Scripture struct {
 	Expression  *string `json:"expression"`
 }
 
+type SignInResponse struct {
+	Access     *string `json:"access"`
+	Refresh    *string `json:"refresh"`
+	RefreshExp *string `json:"refresh_exp"`
+	AccessExp  *string `json:"access_exp"`
+}
+
 type Tag struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
@@ -159,12 +206,46 @@ type User struct {
 	Collections     []*Collection `json:"collections"`
 }
 
+type UserInput struct {
+	Username        string `json:"username"`
+	BirthDate       string `json:"birth_date"`
+	City            string `json:"city"`
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	EmailSubscriber bool   `json:"email_subscriber"`
+}
+
 type Vacancy struct {
 	ID          int     `json:"id"`
 	Title       string  `json:"title"`
 	Description *string `json:"description"`
 	ImgURI      *string `json:"img_uri"`
 	Ordern      *int    `json:"ordern"`
+}
+
+type GetCollectionsInput struct {
+	ID  *int   `json:"id"`
+	Ids []*int `json:"ids"`
+	// ID святого писания
+	ScriptureID *int `json:"scripture_id"`
+	// Показать лекции по годам
+	ByYears *bool `json:"byYears"`
+	// Только лекции на английском
+	EnglishOnly *bool `json:"englishOnly"`
+	// ID категории
+	CategoryID *int `json:"category_id"`
+	// Только святые писания
+	IsSaint         *bool   `json:"is_saint"`
+	IsTematic       *bool   `json:"isTematic"`
+	History         *bool   `json:"history"`
+	Favorite        *bool   `json:"favorite"`
+	Page            *int    `json:"page"`
+	ElementsPerPage *int    `json:"elementsPerPage"`
+	Search          *string `json:"search"`
+	ParentID        *int    `json:"parentId"`
+	ForAdmin        *bool   `json:"forAdmin"`
+	OrderBy         *string `json:"orderBy"`
+	OrderDir        *string `json:"orderDir"`
 }
 
 type CollectionSource string

@@ -181,8 +181,86 @@ type Tag {
 }
 
 
+# interface with front-end
+
+directive @auth(role: Int) on FIELD_DEFINITION
+directive @withCAPTCHA on FIELD_DEFINITION
+
+input MediaFilterInput {
+    type: String!
+    id: Int
+    ids: [Int]
+    """
+    If you want to sort by "id", you should use "media.id"
+    """
+    orderBy: String
+    orderDir: String
+    page: Int
+    elementsPerPage: Int
+    """
+    Подборка
+    """
+    collection_id: Int
+    tags: [Int]
+    title: String
+    scripture_id: Int
+    category_id: Int
+    language: String
+    location_id: Int
+    dateFrom: String
+    dateTo: String
+    withVideo: Boolean
+    withTranscript: Boolean
+    favorite: Boolean
+    history: Boolean
+    filter_id: Int
+    forAdmin: Boolean
+    chapter: [Int]
+    canto: [Int]
+    verse: [Int]
+}
+
+input getCollectionsInput {
+    id: Int
+    ids: [Int]
+    """
+    ID святого писания
+    """
+    scripture_id: Int
+    """
+    Показать лекции по годам
+    """
+    byYears: Boolean
+    """
+    Только лекции на английском
+    """
+    englishOnly: Boolean
+    """
+    ID категории
+    """
+    category_id: Int
+    """
+    Только святые писания
+    """
+    is_saint: Boolean
+    isTematic: Boolean
+    history: Boolean
+    favorite: Boolean
+    page: Int
+    elementsPerPage: Int
+    search: String
+    parentId: Int
+    forAdmin: Boolean
+    orderBy: String
+    orderDir: String
+}
+
+
 type Query {
     getMedia (id: ID, withData: Boolean!) : Media
+    getMediaFiltered (filter: MediaFilterInput, startPage: Int, pageSize: Int ) : [Media]
+	getCollections(input: getCollectionsInput): [Collection]
+	getUsers( startPage: Int, pageSize: Int ): [User] @auth(role: 2)
 }
 
 input MediaInput {
@@ -201,13 +279,57 @@ input MediaInput {
     cover_url:          String
 }
 
+type SignInResponse {
+    access: String
+    refresh: String
+    refresh_exp: String
+    access_exp: String
+}
+
+input UserInput {
+    username: String!
+    birth_date: String!
+    city: String!
+    email: String!
+    password: String!
+    email_subscriber: Boolean!
+}
+
+input ModifyUserInput {
+    username: String!
+    email: String!
+    birth_date: String!
+    city: String!
+    email_subscriber: Boolean!
+    new_password: String
+    img_url: String
+}
+
+
 type Mutation {
+    signIn(email: String!, password: String!): SignInResponse @withCAPTCHA
+    signOut(userId: ID)
+    
+    createUser( user: UserInput) : Int
+    editUser( userId: ID, user: ModifyUserInput) : Int
+
+    addMediaToHisory(mediaId: ID): Int @auth(role: 1)
+    addMediaToFavorite(mediaId: ID): Int @auth(role: 1)
+    deleteMediaFromFavorite(mediaId: ID): Int @auth(role: 1)
+
+    deleteCollectionFromFavorite(collectionId: ID): Int @auth(role: 1)
+    addCollectionToHistory(collectionId: ID): Int @auth(role: 1)
+    addCollectionToFavorite(collectionId: ID): Int @auth(role: 1)
+
     createMedia (input: MediaInput) : Media
     updateMedia (id: ID!, input: MediaInput) : Media
 }
 
 type Subscription {
-    mediaAdded: Media
+    mediaAdded: ID
+    userUpdated: ID
+    LoggedOut: ID
+    LoggedIn: ID
 }
 
 

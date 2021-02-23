@@ -5,13 +5,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ip75/media.server.go/graph"
-	"github.com/ip75/media.server.go/graph/generated"
-
-	//	"github.com/99designs/gqlgen/example/federation/products/graph/generated"
-	//  "github.com/99designs/gqlgen/example/federation/reviews/graph"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/ip75/media.server.go/graph"
+	"github.com/ip75/media.server.go/graph/generated"
 )
 
 const defaultPort = "8080"

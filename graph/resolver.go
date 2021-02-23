@@ -11,6 +11,7 @@ import (
 
 // Resolver is resolver :)
 type Resolver struct {
-	root  generated.ResolverRoot
-	input *model.MediaInput
+	root   generated.ResolverRoot
+	input  *model.MediaInput
+	filter *model.MediaFilterInput
 }
